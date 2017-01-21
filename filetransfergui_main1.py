@@ -56,7 +56,7 @@ class CopyFileGUI:
 
         self.v = StringVar()
         self.lastCopyLabel = ttk.Label(master, textvariable = self.v)
-        self.v.set('Last copy performed on: ' + self.display_latest()[0])       
+        self.v.set('Last copy performed on: ')# + self.display_latest()[0])       
         self.lastCopyLabel.grid(row = 6, column = 0, columnspan = 2)
                                             
 
@@ -72,6 +72,10 @@ class CopyFileGUI:
         self.c.execute('SELECT * FROM copyTimes')
         if self.c.fetchall() == []:
             self.c.execute("INSERT INTO copyTimes (epochTime, datestamp) VALUES(0.0, '2017-01-18')")
+            self.v.set("Database has not yet been populated")
+            self.conn.commit()
+        else:
+            self.v.set("Last copy performed on: " + self.display_latest()[0])
             self.conn.commit()
         self.c.close()
         self.conn.close() 
@@ -89,8 +93,8 @@ class CopyFileGUI:
         self.c = self.conn.cursor()
         self.c.execute('SELECT datestamp FROM copyTimes ORDER BY datestamp DESC')
         mostRecent = self.c.fetchone()
-        self.c.close()
-        self.conn.close()
+        #self.c.close()
+        #self.conn.close()
         return (mostRecent)
 
                     
